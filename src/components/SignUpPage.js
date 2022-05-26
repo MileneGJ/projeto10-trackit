@@ -3,12 +3,11 @@ import mainLogo from '../assets/images/Group 8.png';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
 import { ThreeDots } from  'react-loader-spinner'
 
 export default function SignUpPage() {
     const navigate = useNavigate();
-    const [loading,setLoading] = useState("n")
+    const [loading,setLoading] = useState("n");
     const [newUserData, setNewUserData] = useState({
         email: "",
         name: "",
@@ -18,7 +17,6 @@ export default function SignUpPage() {
 
     function sendNewUserData(e) {
         e.preventDefault();
-        console.log(newUserData);
         const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up";
         const promise = axios.post(URL,newUserData);
         setLoading("y");
