@@ -1,29 +1,42 @@
-import styled from 'styled-components'
-import mainLogo from '../assets/images/Group 8.png'
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
+import UserContext from "../contexts/UserContext";
 import axios from 'axios';
 import { ThreeDots } from 'react-loader-spinner'
+import styled from 'styled-components'
+import mainLogo from '../assets/images/Group 8.png'
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    const {setUserData} = useContext(UserContext) 
     const [loading,setLoading] = useState("n");
     const [loginInfo, setloginInfo] = useState({
         email: "",
         password: ""
     })
 
-    function goToToday(e) {
+    function sendUserData(e) {
         e.preventDefault();
         const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login";
         const promise = axios.post(URL, loginInfo);
         setLoading("y");
-        promise.then(() => navigate("/hoje"));
+        promise.then(goToToday);
         promise.catch(handleError)
     }
 
+    function goToToday (response) {
+        setUserData(response.data);
+        navigate("/hoje");
+    }
+
     function handleError(error) {
-        alert(`${error.response.status} - ${error.response.data}`);
+        let message = ""
+        if(error.response.status===401||error.response.status===422){
+            message = "E-mail ou senha incorretos";
+        } else {
+            message = error.response.data
+        }
+        alert(`${error.response.status} - ${message}`);
         setLoading("n");
     }
 
@@ -53,7 +66,7 @@ export default function LoginPage() {
     return (
         <Content loading={loading}>
             <img src={mainLogo} alt="main logo" />
-            <form onSubmit={goToToday}>
+            <form onSubmit={sendUserData}>
                 <input type="email" placeholder='email' value={showField("email")} onChange={(e)=>modifyField(e,"email")} />
                 <input type="password" placeholder='senha' value={showField("senha")} onChange={(e)=>modifyField(e,"senha")} />
                 <button type="submit">{loading==="y"?<ThreeDots color="#FFFFFF" height={80} width={80}/>:"Entrar"}</button>
