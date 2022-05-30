@@ -2,13 +2,13 @@ import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import UserContext from "../contexts/UserContext";
 import axios from 'axios';
-import { ThreeDots } from 'react-loader-spinner'
-import styled from 'styled-components'
-import mainLogo from '../assets/images/Group 8.png'
+import { ThreeDots } from 'react-loader-spinner';
+import styled from 'styled-components';
+import mainLogo from '../assets/images/Group 8.png';
 
 export default function LoginPage() {
     const navigate = useNavigate();
-    const {setUserData} = useContext(UserContext) 
+    const {setUserData} = useContext(UserContext)
     const [loading,setLoading] = useState("n");
     const [loginInfo, setloginInfo] = useState({
         email: "",
@@ -17,16 +17,20 @@ export default function LoginPage() {
 
     function sendUserData(e) {
         e.preventDefault();
+        if(loading==="n"){
         const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login";
         const promise = axios.post(URL, loginInfo);
         setLoading("y");
         promise.then(goToToday);
         promise.catch(handleError)
+        }
+        
     }
 
     function goToToday (response) {
         setUserData(response.data);
-        localStorage.setItem("token", response.data.token)
+        localStorage.setItem("token", response.data.token);
+        setLoading("n");
         navigate("/hoje");
     }
 
@@ -53,6 +57,7 @@ export default function LoginPage() {
     }
 
     function modifyField(e, field) {
+        if(loading==="n"){
         switch (field) {
             case "email":
                 setloginInfo({ ...loginInfo, email: e.target.value })
@@ -63,6 +68,9 @@ export default function LoginPage() {
             default:
                 break;
         }
+    }else{
+        return null;
+    }
     }
     return (
         <Content loading={loading}>
@@ -72,7 +80,7 @@ export default function LoginPage() {
                 <input type="password" placeholder='senha' value={showField("senha")} onChange={(e)=>modifyField(e,"senha")} />
                 <button type="submit">{loading==="y"?<ThreeDots color="#FFFFFF" height={80} width={80}/>:"Entrar"}</button>
             </form>
-            <Link to="/cadastro">Não tem uma conta? Cadastre-se!</Link>
+            <Link style={{ textDecoration: 'none' }} to="/cadastro">Não tem uma conta? Cadastre-se!</Link>
         </Content>
     )
 }

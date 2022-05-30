@@ -73,7 +73,7 @@ export default function SignUpPage() {
                 <input type="url" placeholder='foto' value={showField("foto")} onChange={(e) => modifyField(e, "foto")} required />
                 <button type="submit">{loading==="y"?<ThreeDots color="#FFFFFF" height={80} width={80}/>:"Cadastrar"}</button>
             </form>
-            <Link to="/">Já tem uma conta? Faça login!</Link>
+            <Link to="/" style={{ textDecoration: 'none' }}>Já tem uma conta? Faça login!</Link>
         </Content>
     )
 }
