@@ -9,7 +9,7 @@ export default function Footer() {
     return (
         <FooterContainer>
             <Link to="/habitos" style={{ textDecoration: 'none' }}><p>Hábitos</p></Link>
-            <div>Hoje</div>
+            <Link to="/hoje" style={{ textDecoration: 'none' }}><div>Hoje</div></Link>
             <Link to="/historico" style={{ textDecoration: 'none' }}><p>Histórico</p></Link>
         </FooterContainer>
     )

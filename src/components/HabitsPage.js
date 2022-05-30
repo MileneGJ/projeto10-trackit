@@ -1,66 +1,105 @@
 import styled from 'styled-components';
 import { useContext, useState, useEffect } from 'react';
-import UserContext from '../contexts/UserContext';
+import HabitContext from '../contexts/HabitContext';
 import axios from 'axios';
 import Header from './Header';
 import Footer from './Footer';
 
 export default function HabitsPage() {
-    const { userData } = useContext(UserContext);
+    const token = localStorage.getItem("token");
+    const { currentHabits, setCurrentHabits } = useContext(HabitContext);
     const [activateCreate, setActivateCreate] = useState("n");
-    const [newHabit, setNewHabit] = useState({});
-    const [currentHabits, setCurrentHabits] = useState([]);
+    const [newHabit, setNewHabit] = useState({
+        name: "",
+        days: []
+    });
 
     useEffect(() => {
+        updateHabitsList();
+    }, [])
+
+    function updateHabitsList() {
         const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits";
         const config = {
             headers: {
-                Authorization: `Bearer ${userData.token}`
+                Authorization: `Bearer ${token}`
             }
         }
         const promise = axios.get(URL, config);
         promise.then(response => setCurrentHabits(response.data))
-    }, [])
+    }
 
     const weekdays = ["D", "S", "T", "Q", "Q", "S", "S"]
 
-    function CreateHabit({ active }) {
-        if (active === "n") {
-            return <></>
-        } else {
-            return (
-                <CreationCard>
-                    <input type="text" placeholder='nome do hábito' value={newHabit.name} onChange={e => setNewHabit({ ...newHabit, name: e.target.value })} />
-                    <div>{weekdays.map(day => <span>{day}</span>)}</div>
-                    <div>
-                        <button onClick={() => setActivateCreate("n")}>Cancelar</button>
-                        <button onClick={postNewHabit}>Salvar</button>
-                    </div>
-                </CreationCard>
-            )
+
+    function Day({ day, index, selected }) {
+        let checkbox = "n";
+        if (selected!==undefined) {
+            for (let i = 0; i < selected.length; i++) {
+                if (index === selected[i]) {
+                    checkbox = "y";
+                }
+            };
         }
+        return (
+            <Daybox onClick={() => selectDay(index)} checked={checkbox}>{day}</Daybox>
+        )
     }
 
-    function postNewHabit() {
+    function selectDay(index) {
+        let includedDays = [];
+        if (newHabit.days.length > 0) {
+            includedDays = [...newHabit.days, index];
+        } else {
+            includedDays.push(index);
+        }
+
+        setNewHabit({ ...newHabit, days: includedDays });
+    }
+
+    function postNewHabit(e) {
+        e.preventDefault();
         const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits";
         const config = {
             headers: {
-                Authorization: `Bearer ${userData.token}`
+                Authorization: `Bearer ${token}`
             }
         }
-        const promise = axios.post(URL, config);
-        promise.then(response => setCurrentHabits([...currentHabits, response.data]))
+        const promise = axios.post(URL, newHabit, config);
+        promise.then(response => {
+            setNewHabit({
+                name: "",
+                days: []
+            })
+            setCurrentHabits([...currentHabits, response.data]);
+            setActivateCreate("n");
+        }
+        )
     }
 
-    function Habits({title}) {
+
+
+    function Habits({ title, Hindex, selected }) {
         return (
             <HabitCard>
                 <h1>{title}</h1>
-                <span>{weekdays.map(day => <div>{day}</div>)}</span>
-                <ion-icon name="trash-outline"></ion-icon>
+                <div>{weekdays.map((day, Dindex) => <Day key={Dindex} index={Dindex} day={day} selected={selected} />)}</div>
+                <ion-icon onClick={() => deleteHabit(Hindex)} name="trash"></ion-icon>
             </HabitCard>
         )
     }
+
+    function deleteHabit(Hindex) {
+        const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${Hindex}`
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        const promise = axios.delete(URL, config);
+        promise.then(updateHabitsList);
+    }
+
     return (
         <>
             <Header />
@@ -71,9 +110,25 @@ export default function HabitsPage() {
                         <ion-icon name="add"></ion-icon>
                     </div>
                 </span>
-                <CreateHabit active={activateCreate} />
+                {activateCreate === "y" ?
+                    <CreationCard>
+                        <form onSubmit={e => postNewHabit(e)}>
+                            <input type="text" placeholder='nome do hábito' value={newHabit.name} onChange={e => setNewHabit({ ...newHabit, name: e.target.value })} required />
+                            <div>{weekdays.map((day, index) => <Day key={index} index={index} day={day} selected={newHabit.days} />)}</div>
+                            <div>
+                                <button onClick={() => setActivateCreate("n")}>Cancelar</button>
+                                <button type="submit">Salvar</button>
+                            </div>
+                        </form>
+                    </CreationCard>
+                    : <></>}
                 <CreatedHabits>
-                    {currentHabits.length > 0 ? currentHabits.map(h => <Habits title={h.name} />) : <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>}
+                    {currentHabits.length > 0 ?
+                        currentHabits.map(h => <Habits key={h.id}
+                            Hindex={h.id}
+                            title={h.name}
+                            selected={h.days} />) :
+                        <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>}
                 </CreatedHabits>
             </Content>
             <Footer />
@@ -141,7 +196,6 @@ margin-bottom:30px;
 input{
     height:45px;
     width:100%;
-    margin-bottom:10px;
     border:solid 1px #D4D4D4;
     border-radius:5px;
     font-size:20px;
@@ -152,23 +206,24 @@ input{
 
 div{
     display:flex;
-}
-div:last-child{
-    margin-top:30px;
-    justify-content:flex-end;
+    margin-top:10px;
 }
 
 span{
-    height:30px;
-    width:30px;
-    border-radius:5px;
-    border:solid 1px #D4D4D4;
-    font-size:20px;
-    color:#DBDBDB;
     display:flex;
     justify-content:center;
     align-items:center;
     margin-right:5px;
+    border-radius:5px;
+    border:solid 1px #D4D4D4;
+    font-size:20px;
+    height:30px;
+    width:30px;
+}
+
+div:last-child{
+    margin-top:30px;
+    justify-content:flex-end;
 }
 
 div button{
@@ -194,23 +249,37 @@ background-color:#FFFFFF;
 padding:20px;
 border-radius:5px;
 box-sizing:border-box;
+margin:10px 0;
 font-size:20px;
 color:#666666;
+position:relative;
 
 div{
-    height:30px;
-    width:30px;
+    display:flex;
+    margin-top:10px;
+}
+span{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-right:5px;
     border-radius:5px;
     border:solid 1px #D4D4D4;
     font-size:20px;
-    color:#DBDBDB;
+    height:30px;
+    width:30px;
 }
 
 ion-icon{
-    position:fixed;
-    top:20px;
-    right:20px;
-    font-size:10px;
+    position:absolute;
+    top:10px;
+    right:15px;
+    font-size:20px;
     color:#666666;
 }
+`
+
+const Daybox = styled.span`
+    background-color:${props => props.checked === "y" ? "#CFCFCF" : "#FFFFFF"};
+    color:${props => props.checked === "y" ? "#FFFFFF" : "#DBDBDB"};
 `

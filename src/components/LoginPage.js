@@ -26,6 +26,7 @@ export default function LoginPage() {
 
     function goToToday (response) {
         setUserData(response.data);
+        localStorage.setItem("token", response.data.token)
         navigate("/hoje");
     }
 
@@ -109,7 +110,7 @@ button{
     height:45px;
     border:none;
     border-radius:5px;
-    background-color:${({loading})=>loading==="y"?"#75b6e6":"#52B6FF"};
+    background-color:${({loading})=>loading==="y"?"#8ab9db":"#52B6FF"};
     color:#FFFFFF;
     font-size:20px;
     font-family: 'Lexend Deca', sans-serif;
