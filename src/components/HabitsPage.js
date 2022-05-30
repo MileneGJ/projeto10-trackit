@@ -51,7 +51,17 @@ export default function HabitsPage() {
         if(loading==="n"){
             let includedDays = [];
         if (newHabit.days.length > 0) {
-            includedDays = [...newHabit.days, index];
+            let alreadySelected="n"
+            for(let i=0;i<newHabit.days.length;i++){
+                if(index===newHabit.days[i]){
+                    alreadySelected = "y";
+                }
+            }
+            if(alreadySelected==="n"){
+                includedDays = [...newHabit.days, index];
+            } else{
+                includedDays = newHabit.days.filter(x=>x!==index);
+            }
         } else {
             includedDays.push(index);
         }

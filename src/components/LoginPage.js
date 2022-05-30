@@ -80,7 +80,7 @@ export default function LoginPage() {
                 <input type="password" placeholder='senha' value={showField("senha")} onChange={(e) => modifyField(e, "senha")} />
                 <button type="submit">{loading === "y" ? <ThreeDots color="#FFFFFF" height={80} width={80} /> : "Entrar"}</button>
             </form>
-            <Link style={{ textDecoration: 'none' }} to="/cadastro">Não tem uma conta? Cadastre-se!</Link>
+            <Link style={{ textDecoration: 'none' }} to="/cadastro"><p>Não tem uma conta? Cadastre-se!</p></Link>
         </Content>
     )
 }
@@ -97,6 +97,12 @@ form{
     display:block;
     margin:40px 0 30px 0;
 }
+
+p{
+    color:#52B6FF;
+    text-decoration: underline;
+}
+
 input{
     width:100%;
     background-color:${({ loading }) => loading === "y" ? "#F2F2F2" : "#FFFFFF"};

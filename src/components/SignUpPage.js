@@ -17,11 +17,13 @@ export default function SignUpPage() {
 
     function sendNewUserData(e) {
         e.preventDefault();
-        const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up";
-        const promise = axios.post(URL, newUserData);
-        setLoading("y");
-        promise.then(() => navigate("/"));
-        promise.catch(handleError);
+        if (loading === "n") {
+            const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up";
+            const promise = axios.post(URL, newUserData);
+            setLoading("y");
+            promise.then(() => navigate("/"));
+            promise.catch(handleError);
+        }
     }
 
     function handleError(error) {
@@ -45,21 +47,25 @@ export default function SignUpPage() {
     }
 
     function modifyField(e, field) {
-        switch (field) {
-            case "email":
-                setNewUserData({ ...newUserData, email: e.target.value })
-                break
-            case "senha":
-                setNewUserData({ ...newUserData, password: e.target.value })
-                break
-            case "nome":
-                setNewUserData({ ...newUserData, name: e.target.value })
-                break
-            case "foto":
-                setNewUserData({ ...newUserData, image: e.target.value })
-                break
-            default:
-                break;
+        if (loading === "n") {
+            switch (field) {
+                case "email":
+                    setNewUserData({ ...newUserData, email: e.target.value })
+                    break
+                case "senha":
+                    setNewUserData({ ...newUserData, password: e.target.value })
+                    break
+                case "nome":
+                    setNewUserData({ ...newUserData, name: e.target.value })
+                    break
+                case "foto":
+                    setNewUserData({ ...newUserData, image: e.target.value })
+                    break
+                default:
+                    break;
+            }
+        } else {
+            return "";
         }
     }
 
@@ -73,7 +79,7 @@ export default function SignUpPage() {
                 <input type="url" placeholder='foto' value={showField("foto")} onChange={(e) => modifyField(e, "foto")} required />
                 <button type="submit">{loading === "y" ? <ThreeDots color="#FFFFFF" height={80} width={80} /> : "Cadastrar"}</button>
             </form>
-            <Link to="/" style={{ textDecoration: 'none' }}>Já tem uma conta? Faça login!</Link>
+            <Link to="/" style={{ textDecoration: 'none' }}><p>Já tem uma conta? Faça login!</p></Link>
         </Content>
     )
 }
@@ -90,6 +96,12 @@ form{
     display:block;
     margin:40px 0 30px 0;
 }
+
+p{
+    color:#52B6FF;
+    text-decoration: underline;
+}
+
 input{
     width:100%;
     background-color:${({ loading }) => loading === "y" ? "#F2F2F2" : "#FFFFFF"};
