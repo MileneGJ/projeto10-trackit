@@ -58,8 +58,7 @@ export default function HistoryPage () {
         <Header></Header>
         <Content>
         <h2>Histórico</h2>
-        {currentHabits.length>0?currentHabits.map(day=>scanHabits(day))
-        :<p>Em breve você poderá ver o histórico dos seus hábitos aqui! </p>}
+        <p>Em breve você poderá ver o histórico dos seus hábitos aqui! </p>
         </Content>
         <Footer></Footer>
         </>

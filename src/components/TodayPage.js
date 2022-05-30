@@ -51,8 +51,8 @@ export default function TodayPage() {
             <HabitCard done={habitDone} equal={equal}>
                 <div>
                     <h3>{title}</h3>
-                    <span><p>Sequência atual: </p><p> {sequence} dias</p></span>
-                    <span><p>Seu recorde: </p><p> {record} dias</p></span>
+                    <span><p>Sequência atual: </p><p className='sequence'> {sequence} dias</p></span>
+                    <span><p>Seu recorde: </p><p className='record'> {record} dias</p></span>
                 </div>
                 <div onClick={() => markAsDone(HID)}>
                     <ion-icon name="checkmark"></ion-icon>
@@ -204,12 +204,12 @@ ion-icon{
     --ionicon-stroke-width: 70px;
 }
 
-span:first-child>p:last-child{
-    color:${({ done }) => done === "y" ? "#8FC549" : "#666666"}
+.sequence{
+    color:${({ done }) => done === "y" ? "#8FC549" : "#666666"};
 }
 
-span:last-child>p:last-child{
-    color:${(props) => props.done === "y" && props.equal === "y" ? "#8FC549" : "#666666"}
+.record{
+    color:${(props) => props.done === "y" && props.equal === "y" ? "#8FC549" : "#666666"};
 }
 `
 
