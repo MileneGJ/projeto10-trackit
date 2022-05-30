@@ -1,15 +1,28 @@
 import styled from 'styled-components';
 import { useContext } from 'react';
-import UserContext from '../contexts/UserContext';
+import ProgressContext from '../contexts/ProgressContext';
 import { Link } from 'react-router-dom';
+import { CircularProgressbar,buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 export default function Footer() {
-    const { userData } = useContext(UserContext);
+    const { progress } = useContext(ProgressContext);
 
     return (
         <FooterContainer>
             <Link to="/habitos" style={{ textDecoration: 'none' }}><p>Hábitos</p></Link>
-            <Link to="/hoje" style={{ textDecoration: 'none' }}><div>Hoje</div></Link>
+            <Link to="/hoje" style={{ textDecoration: 'none' }}>
+                <div>
+                    <CircularProgressbar 
+                    value={progress} 
+                    text="Hoje"
+                    styles={buildStyles({
+                        // Colors
+                        pathColor: `#FFFFFF`,
+                        textColor: '#FFFFFF',
+                        trailColor: 'transparent',
+                        backgroundColor: 'transparent',
+                      })} /></div></Link>
             <Link to="/historico" style={{ textDecoration: 'none' }}><p>Histórico</p></Link>
         </FooterContainer>
     )
@@ -36,6 +49,7 @@ div{
     display:flex;
     justify-content:center;
     align-items:center;
+    padding:5px;
     border-radius:50px;
     color:#FFFFFF;
     font-size:18px;

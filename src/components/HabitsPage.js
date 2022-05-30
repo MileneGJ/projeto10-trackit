@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import { useContext, useState, useEffect } from 'react';
-import HabitContext from '../contexts/HabitContext';
+import { useState, useEffect } from 'react';
 import { ThreeDots } from 'react-loader-spinner';
 import axios from 'axios';
 import Header from './Header';
@@ -8,7 +7,7 @@ import Footer from './Footer';
 
 export default function HabitsPage() {
     const token = localStorage.getItem("token");
-    const { currentHabits, setCurrentHabits } = useContext(HabitContext);
+    const [currentHabits, setCurrentHabits] = useState([]);
     const [loading,setLoading] = useState("n");
     const [activateCreate, setActivateCreate] = useState("n");
     const [newHabit, setNewHabit] = useState({

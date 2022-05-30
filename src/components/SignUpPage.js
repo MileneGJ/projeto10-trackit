@@ -3,11 +3,11 @@ import mainLogo from '../assets/images/Group 8.png';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ThreeDots } from  'react-loader-spinner'
+import { ThreeDots } from 'react-loader-spinner'
 
 export default function SignUpPage() {
     const navigate = useNavigate();
-    const [loading,setLoading] = useState("n");
+    const [loading, setLoading] = useState("n");
     const [newUserData, setNewUserData] = useState({
         email: "",
         name: "",
@@ -18,13 +18,13 @@ export default function SignUpPage() {
     function sendNewUserData(e) {
         e.preventDefault();
         const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up";
-        const promise = axios.post(URL,newUserData);
+        const promise = axios.post(URL, newUserData);
         setLoading("y");
-        promise.then(()=>navigate("/"));
+        promise.then(() => navigate("/"));
         promise.catch(handleError);
     }
 
-    function handleError (error) {
+    function handleError(error) {
         alert(`${error.response.status} - ${error.response.data}`);
         setLoading("n");
     }
@@ -71,7 +71,7 @@ export default function SignUpPage() {
                 <input type="password" placeholder='senha' value={showField("senha")} onChange={(e) => modifyField(e, "senha")} required />
                 <input type="text" placeholder='nome' value={showField("nome")} onChange={(e) => modifyField(e, "nome")} required />
                 <input type="url" placeholder='foto' value={showField("foto")} onChange={(e) => modifyField(e, "foto")} required />
-                <button type="submit">{loading==="y"?<ThreeDots color="#FFFFFF" height={80} width={80}/>:"Cadastrar"}</button>
+                <button type="submit">{loading === "y" ? <ThreeDots color="#FFFFFF" height={80} width={80} /> : "Cadastrar"}</button>
             </form>
             <Link to="/" style={{ textDecoration: 'none' }}>Já tem uma conta? Faça login!</Link>
         </Content>
@@ -92,12 +92,12 @@ form{
 }
 input{
     width:100%;
-    background-color:${({loading})=>loading==="y"?"#F2F2F2":"#FFFFFF"};
+    background-color:${({ loading }) => loading === "y" ? "#F2F2F2" : "#FFFFFF"};
     height:45px;
     border:solid 1px #D4D4D4;
     border-radius:5px;
     font-family: 'Lexend Deca', sans-serif;
-    color:${({loading})=>loading==="y"?"#AFAFAF":"#DBDBDB"};
+    color:${({ loading }) => loading === "y" ? "#AFAFAF" : "#DBDBDB"};
     font-size:20px;
     margin-bottom: 5px;
     padding:0 10px;
@@ -111,7 +111,7 @@ button{
     height:45px;
     border:none;
     border-radius:5px;
-    background-color:${({loading})=>loading==="y"?"#75b6e6":"#52B6FF"};
+    background-color:${({ loading }) => loading === "y" ? "#75b6e6" : "#52B6FF"};
     color:#FFFFFF;
     font-size:20px;
     font-family: 'Lexend Deca', sans-serif;

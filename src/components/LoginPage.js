@@ -8,8 +8,8 @@ import mainLogo from '../assets/images/Group 8.png';
 
 export default function LoginPage() {
     const navigate = useNavigate();
-    const {setUserData} = useContext(UserContext)
-    const [loading,setLoading] = useState("n");
+    const { setUserData } = useContext(UserContext)
+    const [loading, setLoading] = useState("n");
     const [loginInfo, setloginInfo] = useState({
         email: "",
         password: ""
@@ -17,17 +17,17 @@ export default function LoginPage() {
 
     function sendUserData(e) {
         e.preventDefault();
-        if(loading==="n"){
-        const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login";
-        const promise = axios.post(URL, loginInfo);
-        setLoading("y");
-        promise.then(goToToday);
-        promise.catch(handleError)
+        if (loading === "n") {
+            const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login";
+            const promise = axios.post(URL, loginInfo);
+            setLoading("y");
+            promise.then(goToToday);
+            promise.catch(handleError)
         }
-        
+
     }
 
-    function goToToday (response) {
+    function goToToday(response) {
         setUserData(response.data);
         localStorage.setItem("token", response.data.token);
         setLoading("n");
@@ -36,7 +36,7 @@ export default function LoginPage() {
 
     function handleError(error) {
         let message = ""
-        if(error.response.status===401||error.response.status===422){
+        if (error.response.status === 401 || error.response.status === 422) {
             message = "E-mail ou senha incorretos";
         } else {
             message = error.response.data
@@ -57,28 +57,28 @@ export default function LoginPage() {
     }
 
     function modifyField(e, field) {
-        if(loading==="n"){
-        switch (field) {
-            case "email":
-                setloginInfo({ ...loginInfo, email: e.target.value })
-                break
-            case "senha":
-                setloginInfo({ ...loginInfo, password: e.target.value })
-                break
-            default:
-                break;
+        if (loading === "n") {
+            switch (field) {
+                case "email":
+                    setloginInfo({ ...loginInfo, email: e.target.value })
+                    break
+                case "senha":
+                    setloginInfo({ ...loginInfo, password: e.target.value })
+                    break
+                default:
+                    break;
+            }
+        } else {
+            return null;
         }
-    }else{
-        return null;
-    }
     }
     return (
         <Content loading={loading}>
             <img src={mainLogo} alt="main logo" />
             <form onSubmit={sendUserData}>
-                <input type="email" placeholder='email' value={showField("email")} onChange={(e)=>modifyField(e,"email")} />
-                <input type="password" placeholder='senha' value={showField("senha")} onChange={(e)=>modifyField(e,"senha")} />
-                <button type="submit">{loading==="y"?<ThreeDots color="#FFFFFF" height={80} width={80}/>:"Entrar"}</button>
+                <input type="email" placeholder='email' value={showField("email")} onChange={(e) => modifyField(e, "email")} />
+                <input type="password" placeholder='senha' value={showField("senha")} onChange={(e) => modifyField(e, "senha")} />
+                <button type="submit">{loading === "y" ? <ThreeDots color="#FFFFFF" height={80} width={80} /> : "Entrar"}</button>
             </form>
             <Link style={{ textDecoration: 'none' }} to="/cadastro">Não tem uma conta? Cadastre-se!</Link>
         </Content>
@@ -99,12 +99,12 @@ form{
 }
 input{
     width:100%;
-    background-color:${({loading})=>loading==="y"?"#F2F2F2":"#FFFFFF"};
+    background-color:${({ loading }) => loading === "y" ? "#F2F2F2" : "#FFFFFF"};
     height:45px;
     border:solid 1px #D4D4D4;
     border-radius:5px;
     font-family: 'Lexend Deca', sans-serif;
-    color:${({loading})=>loading==="y"?"#AFAFAF":"#DBDBDB"};
+    color:${({ loading }) => loading === "y" ? "#AFAFAF" : "#DBDBDB"};
     font-size:20px;
     margin-bottom: 5px;
     padding:0 10px;
@@ -118,7 +118,7 @@ button{
     height:45px;
     border:none;
     border-radius:5px;
-    background-color:${({loading})=>loading==="y"?"#8ab9db":"#52B6FF"};
+    background-color:${({ loading }) => loading === "y" ? "#8ab9db" : "#52B6FF"};
     color:#FFFFFF;
     font-size:20px;
     font-family: 'Lexend Deca', sans-serif;
